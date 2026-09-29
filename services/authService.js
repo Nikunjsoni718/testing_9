@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// BUG (critical): secret is hardcoded instead of read from environment config.
-// Anyone with repo access can forge valid tokens.
-const JWT_SECRET = 'melius-super-secret-key-2024';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not set');
+}
 
 // GOOD PATTERN: strong adaptive hashing with a reasonable cost factor.
 async function hashPassword(plainPassword) {
